@@ -22,6 +22,10 @@ export default class Login extends Component {
     }
   }
 
+  _fetchRole(){
+    url = 'http://'+ config.ip + ':' + config.port + '/api/Users/login'
+  }
+
   render() {
     return (
       <KeyboardAvoidingView behavior='padding' style={styles.wrapper}>
@@ -57,7 +61,6 @@ export default class Login extends Component {
   }
 
   login = () => {
-    alert(this.state.email)
 
     url = 'http://'+ config.ip + ':' + config.port + '/api/Users/login'
     console.log(url)
@@ -87,8 +90,11 @@ export default class Login extends Component {
     .then(([data]) => {
       userId = data.userId
       token = data.id
-      console.log(userId);
-      console.log(token);
+
+      if(userId && token) {
+        this.props.navigation.navigate('Action', {userId: userId, userToken: token})
+      }
+
     })
     .done();
 
