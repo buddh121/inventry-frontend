@@ -29,13 +29,13 @@ export default class Action extends Component{
 
         <TouchableOpacity
               style={styles.button}
-              onPress={this._fetchInventry}>
+              onPress={this._fetchInventry.bind(this)}>
               <Text> Show Inventry </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
               style={styles.button}
-              onPress={this._addInventry}>
+              onPress={this._addInventry.bind(this)}>
               <Text> Add Inventry </Text>
         </TouchableOpacity>
 
