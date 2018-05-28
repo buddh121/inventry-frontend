@@ -4,80 +4,130 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  TextInput
+  TextInput,
+  KeyboardAvoidingView,
+  ScrollView
 } from 'react-native'
+import config from '../../config'
 
 export default class InventryForm extends Component{
   constructor(props) {
     super(props)
+    this.state = {
+      userToken: props.navigation.state.params.userToken,
+      userId: props.navigation.state.params.userId,
+      status: "ACTIVE"
+    }
+  }
+
+  _submit(){
+    url = 'http://'+ config.ip + ':' + config.port + '/api/inventries/create' + '?access_token=' + this.state.userToken
+    console.log(url);
+    fetch(url, {
+
+      method: 'POST',
+
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+
+      body: JSON.stringify({
+        productId: this.state.productId,
+        productName: this.state.productName,
+        vendor: this.state.vendor,
+        mrp: this.state.mrp,
+        batchNumber: this.state.batchNumber,
+        batchDate: this.state.batchDate,
+        quantity: this.state.quantity,
+        status: this.state.status
+      })
+
+    })
+    .then((response) =>{
+      if(response.status == 200) {
+        alert("record created successfully")
+      }else{
+        console.log(response.status);
+        console.log(response);
+        alert('something went wrong please try again... ')
+      }
+    })
+    .done()
   }
 
   render() {
     return(
+
+
       <View style={styles.container}>
 
       <TextInput
         style={styles.textInput}
         placeholder='Product id'
-        onChangeText= {(email) => this.setState({email})}
+        onChangeText= {(productId) => this.setState({productId})}
         underlineColorAndroid= 'transparent'
       />
 
       <TextInput
         style={styles.textInput}
         placeholder= 'Product Name'
-        onChangeText= {(password) => this.setState({password})}
+        onChangeText= {(productName) => this.setState({productName})}
         underlineColorAndroid= 'transparent'
       />
 
       <TextInput
         style={styles.textInput}
         placeholder= 'Vendor'
-        onChangeText= {(password) => this.setState({password})}
+        onChangeText= {(vendor) => this.setState({vendor})}
         underlineColorAndroid= 'transparent'
       />
 
       <TextInput
         style={styles.textInput}
         placeholder= 'MRP'
-        onChangeText= {(password) => this.setState({password})}
+        onChangeText= {(mrp) => this.setState({mrp})}
         underlineColorAndroid= 'transparent'
       />
 
       <TextInput
         style={styles.textInput}
         placeholder= 'Batch Number'
-        onChangeText= {(password) => this.setState({password})}
+        onChangeText= {(batchNumber) => this.setState({batchNumber})}
         underlineColorAndroid= 'transparent'
       />
 
       <TextInput
         style={styles.textInput}
         placeholder= 'Batch Date'
-        onChangeText= {(password) => this.setState({password})}
+        onChangeText= {(batchDate) => this.setState({batchDate})}
         underlineColorAndroid= 'transparent'
       />
 
       <TextInput
         style={styles.textInput}
         placeholder= 'Quantity'
-        onChangeText= {(password) => this.setState({password})}
+        onChangeText= {(quantity) => this.setState({quantity})}
         underlineColorAndroid= 'transparent'
       />
 
       <TouchableOpacity
         style={styles.button}
-        onPress={this.login}>
-        <Text> Log in </Text>
+        onPress={this._submit.bind(this)}>
+        <Text> submit </Text>
       </TouchableOpacity>
 
       </View>
+
     )
   }
 }
 
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1
+  },
   container: {
     flex: 1,
     alignItems: 'center',

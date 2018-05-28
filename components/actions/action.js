@@ -19,7 +19,7 @@ export default class Action extends Component{
   }
 
   _fetchInventry() {
-    // alert("Fetch invebtry called")
+
     this.props.navigation.navigate('InventryDetails', {userToken: this.state.userToken, userId: this.state.userId})
   }
 
