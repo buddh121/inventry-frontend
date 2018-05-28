@@ -12,15 +12,19 @@ import {
 export default class Action extends Component{
   constructor(props) {
     super(props)
+    this.state = {
+      userToken: props.navigation.state.params.userToken,
+      userId: props.navigation.state.params.userId
+    }
   }
 
   _fetchInventry() {
     // alert("Fetch invebtry called")
-    this.props.navigation.navigate('InventryDetails')
+    this.props.navigation.navigate('InventryDetails', {userToken: this.state.userToken, userId: this.state.userId})
   }
 
   _addInventry() {
-    this.props.navigation.navigate('InventryForm')
+    this.props.navigation.navigate('InventryForm', {userToken: this.state.userToken, userId: this.state.userId})
   }
 
   render() {

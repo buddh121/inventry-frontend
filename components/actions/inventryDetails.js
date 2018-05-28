@@ -8,31 +8,89 @@ import {
   Image,
   View
 } from 'react-native'
+import GridView from 'react-native-super-grid';
+import config from '../../config'
+
 
 export default class InventryDetails extends Component{
   constructor(props) {
     super(props)
+    this.state = {
+      userToken: props.navigation.state.params.userToken,
+      userId: props.navigation.state.params.userId,
+      isLoading: true
+    }
+    this._fetchInventryItems()
+  }
+
+  _fetchInventryItems(){
+    console.log('Fetch callled');
+    url = 'http://'+ config.ip + ':' + config.port + '/api/inventries/fetch' + '?access_token=' + this.state.userToken
+    console.log(url);
+    fetch(url)
+    .then((response) => {
+      if(response.status == 200) {
+        return Promise.all([response.json()])
+      }else {
+        alert("Something went wrong please try again...")
+      }
+    })
+    .then(([res]) => {
+      this.setState({
+        data: res.data,
+        isLoading: false
+      })
+    })
+    .done()
   }
 
   render() {
+    
+    if (this.state.isLoading) {
+      	return(
+  				<View style = {{flex: 1, paddingTop: 200}}>
+  				 <ActivityIndicator/>
+  				</View>
+		    )
+    }
+
     return(
-      <View style={styles.container}>
-
-        <Text>This is description page</Text>
-
-      </View>
+      <GridView
+        itemDimension={130}
+        items={this.state.data}
+        style={styles.gridView}
+        renderItem={item => (
+          <View style={[styles.itemContainer, { backgroundColor: '#f1c40f' }]}>
+            <Text style={styles.itemName}>{item.productName}</Text>
+            <Text style={styles.itemName}>{item.mrp}</Text>
+            <Text style={styles.itemName}>{item.quantity}</Text>
+          </View>
+        )}
+      />
     )
   }
 }
 
 
 const styles = StyleSheet.create({
-  container: {
+  gridView: {
+    paddingTop: 25,
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#2896d3',
-    paddingLeft: 40,
-    paddingRight: 40
-  }
+  },
+  itemContainer: {
+    justifyContent: 'flex-end',
+    borderRadius: 5,
+    padding: 10,
+    height: 150,
+  },
+  itemName: {
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: '600',
+  },
+  itemCode: {
+    fontWeight: '600',
+    fontSize: 12,
+    color: '#fff',
+  },
 });
