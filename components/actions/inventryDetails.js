@@ -18,14 +18,21 @@ export default class InventryDetails extends Component{
     this.state = {
       userToken: props.navigation.state.params.userToken,
       userId: props.navigation.state.params.userId,
+      userRole: props.navigation.state.params.userRole,
       isLoading: true
     }
     this._fetchInventryItems()
   }
 
   _fetchInventryItems(){
+    var status = null
+    if(this.state.userRole == 'STORE_MANAGER') {
+      status = 'ALL'
+    }else{
+      status = 'ACTIVE'
+    }
     console.log('Fetch callled');
-    url = 'http://'+ config.ip + ':' + config.port + '/api/inventries/fetch' + '?access_token=' + this.state.userToken
+    url = 'http://'+ config.ip + ':' + config.port + '/api/inventries/fetch' + '?status=' + status + '&access_token=' + this.state.userToken
     console.log(url);
     fetch(url)
     .then((response) => {
@@ -44,8 +51,31 @@ export default class InventryDetails extends Component{
     .done()
   }
 
+
+  _changeStatus(item) {
+    console.log(item);
+    url = 'http://'+ config.ip + ':' + config.port + '/api/inventries/updateStatus' + '?access_token=' + this.state.userToken
+    fetch(url, {
+
+      method: 'PATCH',
+
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+
+      body: JSON.stringify(item)
+
+    })
+    .then((response) => {
+      console.log(response);
+    })
+  }
+
+
+
   render() {
-    
+
     if (this.state.isLoading) {
       	return(
   				<View style = {{flex: 1, paddingTop: 200}}>
@@ -60,11 +90,16 @@ export default class InventryDetails extends Component{
         items={this.state.data}
         style={styles.gridView}
         renderItem={item => (
+          <TouchableOpacity
+            onPress={this._changeStatus.bind(this, item)}
+          >
           <View style={[styles.itemContainer, { backgroundColor: '#f1c40f' }]}>
             <Text style={styles.itemName}>{item.productName}</Text>
             <Text style={styles.itemName}>{item.mrp}</Text>
             <Text style={styles.itemName}>{item.quantity}</Text>
+            <Text style={styles.itemName}>{item.status}</Text>
           </View>
+          </TouchableOpacity>
         )}
       />
     )

@@ -14,17 +14,18 @@ export default class Action extends Component{
     super(props)
     this.state = {
       userToken: props.navigation.state.params.userToken,
-      userId: props.navigation.state.params.userId
+      userId: props.navigation.state.params.userId,
+      userRole: props.navigation.state.params.userRole
     }
   }
 
   _fetchInventry() {
 
-    this.props.navigation.navigate('InventryDetails', {userToken: this.state.userToken, userId: this.state.userId})
+    this.props.navigation.navigate('InventryDetails', {userToken: this.state.userToken, userId: this.state.userId, userRole: this.state.userRole})
   }
 
   _addInventry() {
-    this.props.navigation.navigate('InventryForm', {userToken: this.state.userToken, userId: this.state.userId})
+    this.props.navigation.navigate('InventryForm', {userToken: this.state.userToken, userId: this.state.userId, userRole: this.state.userRole})
   }
 
   render() {

@@ -22,8 +22,35 @@ export default class Login extends Component {
     }
   }
 
-  _fetchRole(){
-    url = 'http://'+ config.ip + ':' + config.port + '/api/Users/login'
+   _fetchRole = (userId) =>{
+    console.log(userId);
+    url = 'http://'+ config.ip + ':' + config.port + '/api/Roles' + '?access_token=' + this.state.userToken
+    console.log(url);
+    fetch(url)
+    .then((response) =>{
+      if (response.status == 200) {
+        return Promise.all([response.json()])
+      }else{
+        console.log("Something went wrong please try again...");
+      }
+    })
+    .then(([data]) => {
+      var user_role = null
+      data.forEach(function(item) {
+        if(item.userId == userId) {
+          user_role = item.name
+        }else{
+          console.log(item);
+        }
+      })
+
+      if(user_role){
+        console.log(user_role);
+        this.props.navigation.navigate('Action', {userId: userId, userToken: token, userRole: user_role})
+      }
+
+    })
+    .done()
   }
 
   render() {
@@ -92,7 +119,11 @@ export default class Login extends Component {
       token = data.id
 
       if(userId && token) {
-        this.props.navigation.navigate('Action', {userId: userId, userToken: token})
+        this.setState({
+          userId: userId,
+          userToken: token
+        })
+        this._fetchRole(userId)
       }
 
     })

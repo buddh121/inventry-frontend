@@ -16,13 +16,18 @@ export default class InventryForm extends Component{
     this.state = {
       userToken: props.navigation.state.params.userToken,
       userId: props.navigation.state.params.userId,
-      status: "ACTIVE"
+      userRole: props.navigation.state.params.userRole,
     }
   }
 
   _submit(){
+    var status = null
     url = 'http://'+ config.ip + ':' + config.port + '/api/inventries/create' + '?access_token=' + this.state.userToken
-    console.log(url);
+    if(this.state.userRole == "STORE_MANAGER") {
+      status = "ACTIVE"
+    }else {
+      status = "INACTIVE"
+    }
     fetch(url, {
 
       method: 'POST',
@@ -40,7 +45,7 @@ export default class InventryForm extends Component{
         batchNumber: this.state.batchNumber,
         batchDate: this.state.batchDate,
         quantity: this.state.quantity,
-        status: this.state.status
+        status: status
       })
 
     })
